@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import pdfplumber
+import fitz  # PyMuPDF
 from fpdf import FPDF
 
 # Título de la aplicación
@@ -8,10 +8,10 @@ st.title("Convertir PDF a CSV y CSV a PDF")
 
 # Función para convertir PDF a DataFrame
 def pdf_to_dataframe(file):
-    with pdfplumber.open(file) as pdf:
-        text = ''
-        for page in pdf.pages:
-            text += page.extract_text() + '\n'
+    text = ''
+    with fitz.open(file) as pdf:
+        for page in pdf:
+            text += page.get_text() + '\n'
     # Convertir el texto a un DataFrame (puedes personalizar esto según el formato)
     data = [line.split() for line in text.split('\n') if line]
     return pd.DataFrame(data)
